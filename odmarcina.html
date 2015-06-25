@@ -29,7 +29,9 @@
       </div>
       
       <a class="gr btn">Grupy</a><br />
+      <!-- <div class="grupa"></div>  -->
       <div class="grupy">
+
       </div>
 
       <a class="sal btn">Sala</a>
@@ -46,8 +48,8 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
     var yql = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + site + '"') + '&format=xml&callback=?';
     var widthSize = $(document).width();
     var wS = $(window).width();
-    console.log(widthSize);
-    console.log(wS);
+    // console.log(widthSize);
+    // console.log(wS);
 
 
 
@@ -178,8 +180,11 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
 
         $(data.results[0]).find("okres").each(function() {
           var od = $(this).attr("od");
-          $(selector).append(od);
-          console.log(od);
+          var doo = $(this).attr("do");
+          var typOkres = $(this).attr("typ");
+          var nazwaOkresu = $(this).attr("nazwa");
+          $(selector).append("<a href=''>Caly semestr</a>" + od + doo + nazwaOkresu);
+          // console.log(od);
 
         });  
 
@@ -193,13 +198,10 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           $(this).find("sala").each(function () {
             sala = $(this).html();
           });
-          console.log(nauczyciel);
+          var gr = $(this).find("grupa");
+          console.log(gr);
           $(selector).append("<tr><td>"+nauczyciel+"</td> <td>"+sala+"</td></tr>"); //
         });
-
-        // $(data.results[0]).find("zasob").each(function(){
-        //    var typ $(this).attr() 
-        // });
       }
     }
 </script>

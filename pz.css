@@ -67,3 +67,10 @@ td {
 tr {
   min-width: 100%;
 }
+
+th { background-color: darkseagreen; border-color: darkseagreen; border-style: solid; border-width: 1pt; }
+tr.czerwony {color: red } /* zajęcia przeniesione */
+td { background-color: azure; text-align: center; border-color: darkseagreen; border-style: solid; border-width: 1pt; }
+td.uwagi {color: green; font-style: italic; }
+td.termin {width: 6.5em}
+td.dzien {width: 9.5em}
