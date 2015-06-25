@@ -63,24 +63,25 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
 
           switch(typ) {
             case "G":
-                if (widthSize > 768) {
+                if (widthSize > 981) {
                   $(".grupy").append("<a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp </a>");                  
                 } else {
                   $(".grupy").append("<tr><td><a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp </a></td></tr>").hide();                  
                 }
                 break;
             case "N":
-                if (widthSize > 768) {
+                if (widthSize > 981) {
                   $(".nauczyciele").append("<a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp &nbsp</a>");
                 } else {
                   $(".nauczyciele").append("<a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp &nbsp</a>").hide();
                 }
                 break;
             case "S":
-                if (widthSize > 768) {
-                  $(".sala").append("<a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp &nbsp</a>");
-                } else {
+                if (widthSize < 981) {
                   $(".sala").append("<tr><td><a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp &nbsp</a></td></tr>").hide();
+                } else {
+                  $(".sala").append("<a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp &nbsp</a>");
+                  $(".sala").append(wS);
                 }
                 break;                
             default: 
@@ -123,7 +124,7 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           console.log('clicked');
           e.preventDefault();
           mainThis.parseXml($(this).attr('href'), function (data) {
-            console.log(selector);
+            // console.log(selector);
             switch(selector) {
               case ".grupy":
                     mainThis.renderJsonData(data, '.grupy')
@@ -174,16 +175,26 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           $(selector).append("<tr><td><a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&id=" + id + "' >" + nazwa + "&nbsp</a></td></tr>");
 
         });
+
+        $(data.results[0]).find("okres").each(function() {
+          var od = $(this).attr("od");
+          $(selector).append(od);
+          console.log(od);
+
+        });  
+
         $(data.results[0]).find("zajecia").each(function() {
           var nauczyciel, sala;
           // console.log($(this).find("nauczyciel"));
           $(this).find("nauczyciel").each(function () {
             nauczyciel = $(this).html();
+            
           });
           $(this).find("sala").each(function () {
             sala = $(this).html();
           });
-          $(selector).append("<tr><td><a href='http://planzajec.uek.krakow.pl/index.php?typ=" + nauczyciel +  sala + "' >&nbsp</a></td></tr>"); //<tr><td>"+nauczyciel+"</td> <td>"+sala+"</td></tr>+ nazwa +
+          console.log(nauczyciel);
+          $(selector).append("<tr><td>"+nauczyciel+"</td> <td>"+sala+"</td></tr>"); //
         });
 
         // $(data.results[0]).find("zasob").each(function(){
