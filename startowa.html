@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery.parseXML demo</title>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+   <script type='text/javascript' src='jquery.redirect.min.js'></script> 
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="planzajec.css">
+</head>
+<body>
+<div class="naglowek">
+<div class="logo"><img src="UEK-logo.gif" alt=""></div>
+<div class="planzajec"><a href="index.php">Plan Zajęć</a></div>
+</div>
+<form action="index.php" method="get">
+<input type="hidden" name="typ" value="G"><input type="hidden" name="id" value="116061">okres: <select name="okres"><option selected value="1"></option>
+<option value="2">2015-02-16 do 2015-09-30</option></select><button type="submit">Ok</button>
+</form>
+<div class="grupa">KrDZIa3012</div>
+ <p id="output"></p>
+<p class="class"></p>
+<div class="container">
+  <div class="row col-lg-12 btn-alt">
+      <p class="nau btn">Nauczyciele</p><br />
+      <div class="nauczyciele">
+      </div>
+      
+      <a class="gr btn">Grupy</a><br />
+      <div class="grupy">
+      </div>
+
+      <a class="sal btn">Sala</a>
+      <div class="sala">
+      </div>
+
+  </div>
+</div>
+
+
+<script>
+
+site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
+var yql = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + site + '"') + '&format=xml&callback=?';
+var widthSize = $(window).width();
+$.getJSON(yql, function(data){
+    parseXml(data.results[0]);
+      function parseXml(xml)
+      {         
+      
+       $(xml).find("grupowanie").each(function(){
+          var typ = $(this).attr("typ");
+          var grupa = $(this).attr("grupa");
+          
+          if ( typ === 'G'){
+            if (widthSize < 330){
+              $(".grupy").append("<tr><td><a href='?typ=" + typ + "&grupa=" + grupa +  "' >" + grupa + "&nbsp</a></td></tr>").hide();   
+              $(".gr").click(function(){
+              $(".grupy").toggle();
+              });
+            } else {
+            $(".grupy").append("<a href='" + "' >" + grupa + "&nbsp</a>").hide();   
+            $(".gr").click(function(){
+                 $(".grupy").toggle();            
+            });
+          }
+          } else if (typ === 'N'){
+            $(".nauczyciele").append("<a href='" + "' >" + grupa + "&nbsp</a>").hide();
+            $(".nau").click(function(){
+              $(".nauczyciele").toggle();
+            }); 
+
+          } else {
+           $(".sala").append("<a href='" + "' >" + grupa + "&nbsp</a>").hide();
+            // if((".sal").click() === true)
+            $(".sal").click(function(){
+              
+              if($(".sal").is(":visible")){
+                $(".sala").show();
+              } else {
+                $(".sala").hide();
+              }
+
+            });
+          }
+       });
+      }
+
+});
+
+// $(document).ready(funciton(){
+//   $("a ").click(function(){
+//      $.post("podstrona.htlm", {pageID: "1"} );
+//   });
+// });
+
+</script>
+ 
+</body>
+</html>
