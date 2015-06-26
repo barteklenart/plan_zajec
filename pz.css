@@ -63,6 +63,7 @@
 
 td { 
   width: 800px;
+  
 }
 tr {
   min-width: 100%;
@@ -74,3 +75,65 @@ td { background-color: azure; text-align: center; border-color: darkseagreen; bo
 td.uwagi {color: green; font-style: italic; }
 td.termin {width: 6.5em}
 td.dzien {width: 9.5em}
+
+.naglowek {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.logo img{
+  float: right;
+}
+
+.planzajec a{
+  float: left;
+  font-size: 36px;
+  color: #000;
+  font-weight: 400;
+}
+
+/*
+====================
+tabela zajecia
+====================
+*/
+
+.topTable {
+  background: darkseagreen;
+  border-top: 1px solid #000;
+  border-bottom: none;
+  font-weight: 400;
+}
+
+.footerTable {
+  /*background: #fff;*/
+  border-bottom: none;
+  border-top: none;
+}
+
+.midleTable {
+  border-top: none;
+  border-bottom: none;
+}
+
+.termin, .typPrzedmiot, .sala, .prowadzacy {
+  float: left;
+}
+
+.odDoGodzina {
+  float: right;
+}
+
+.typPrzeniesienie {
+  background: red;
+  float: left;
+}
+
+.brakUwag {
+  visibility: hidden;
+}
+
+.uwagiDoPrzedmiotu {
+  font-style: italic;
+  float: right;
+}

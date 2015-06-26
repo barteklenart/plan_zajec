@@ -12,8 +12,10 @@
 </head>
 <body>
 <div class="naglowek">
-<div class="logo"><img src="UEK-logo.gif" alt=""></div>
-<div class="planzajec"><a href="index.php">Plan Zajęć</a></div>
+  <div class="row ">
+    <div class="logo col-lg-6 col-xs-6"><img src="UEK-logo.gif" alt=""></div>
+    <div class="planzajec col-lg-6 col-xs-6"><a href="odmarcina.html">Plan Zajęć</a></div>
+  </div>
 </div>
 <!-- <form action="index.php" method="get">
 <input type="hidden" name="typ" value="G"><input type="hidden" name="id" value="116061">okres: <select name="okres"><option selected value="1"></option>
@@ -152,7 +154,7 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
       },
       parseXml: function(url, callback){
 
-        url = url + "&okres=1";
+        url = url + "&okres=2";
         url = url+"&xml";
         url = url.replace(/\ /g, '%20');
         before = url;
@@ -184,23 +186,38 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           var typOkres = $(this).attr("typ");
           var nazwaOkresu = $(this).attr("nazwa");
           $(selector).append("<a href=''>Caly semestr</a>" + od + doo + nazwaOkresu);
-          // console.log(od);
+          
 
         });  
 
         $(data.results[0]).find("zajecia").each(function() {
-          var nauczyciel, sala;
-          // console.log($(this).find("nauczyciel"));
+          var nauczyciel, sala, termin, dzien, od_godz, do_godz, przedmiot, typ,grupa, typPrzedmiot, uwagi, uwagiDoPrzedmiotu ;
+          
+          typPrzedmiot = "typPrzedmiot";
+          uwagiDoPrzedmiotu = "uwagiDoPrzedmiotu";
           $(this).find("nauczyciel").each(function () {
             nauczyciel = $(this).html();
             
           });
-          $(this).find("sala").each(function () {
-            sala = $(this).html();
-          });
-          var gr = $(this).find("grupa");
-          console.log(gr);
-          $(selector).append("<tr><td>"+nauczyciel+"</td> <td>"+sala+"</td></tr>"); //
+          grupa = $(this).find("grupa").html();
+          termin = $(this).find("termin").html();
+          dzien = $(this).find("dzien").html();
+          od_godz = $(this).find("od-godz").html();
+          do_godz = $(this).find("do-godz").html();
+          przedmiot = $(this).find("przedmiot").html();
+          typ = $(this).find("typ").html();
+          sala = $(this).find("sala").html();
+          uwagi = $(this).find("uwagi").html();
+          
+          if (uwagi === undefined){
+              uwagiDoPrzedmiotu = "brakUwag";
+          }
+
+          if(typ === "Przeniesienie zajęć"){
+            typPrzedmiot = "typPrzeniesienie";
+          }
+
+          $(selector).append("<tr><td class='topTable'><span class='termin'>"+termin+" "+dzien+ "</span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></td></tr>" + "<tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='sala'>"+sala+"</span></td></tr>"); //
         });
       }
     }
