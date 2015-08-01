@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>jQuery.parseXML demo</title>
+  <title>Plan zajec demo</title>
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
    <!-- <script type='text/javascript' src='jquery.redirect.min.js'></script> -->
   <!-- <link rel="stylesheet" href="planzajec.css"> -->
    <link href="css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
   <link rel="stylesheet" href="pz.css">
 </head>
@@ -41,12 +42,20 @@
       <button type="button" class="btn btn-success btn-lg btn-block sal">Sala</button>
       <!-- <a class="sal btn">Sala</a> -->
       <div class="sala">
+
       </div>
-      <div class="content"></div>
+     <!--    <ul class="nav nav-tabs" role="tablist">
+          <li class="active"><a href="#1zakladka" role="tab" data-toggle="tab">Cały semestr</a></li>
+          <li><a href="#2zakladka" role="tab" data-toggle="tab">Obecny tydzień</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active wynik1" id="1zakladka"></div>
+          <div class="tab-pane wynik2" id="2zakladka"></div>
+        </div> -->
   </div>
 </div>
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
 <script>
 
 $(window).load(function() {
@@ -156,7 +165,15 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
       },
       parseXml: function(url, callback){
 
-
+        // urlOkres1 = url;
+        // urlOkres1 = urlOkres1 + "&okres=1"
+        // urlOkres1 = urlOkres1+"&xml";
+        // urlOkres1 = urlOkres1.replace(/\ /g, '%20');
+        // var yql1 = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + urlOkres1 + '"') + '&format=xml&callback=?';
+        // $.getJSON(yql1, function(data){
+        //   // console.log(data);
+        //   callback(data);
+        // })   
 
         url = url + "&okres=2";
         url = url+"&xml";
@@ -164,7 +181,7 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
         console.log(url);
         var yql = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + url + '"') + '&format=xml&callback=?';
         $.getJSON(yql, function(data){
-          console.log(data);
+          // console.log(data);
           callback(data);
         })
       },
@@ -189,13 +206,12 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           var typOkres = $(this).attr("typ");
           var nazwaOkresu = $(this).attr("nazwa");
 
-          var addTime = "<ul class='nav nav-tabs'><li ><a href=''' alt='obecny'>Obecny <br> tydzień</a></li><li><a href='' class='active'>Cały semestr</a></li></ul> ";
+
           
 
           
-          // if($(this).attr("sala")){
+
             if(!($('.nav-tabs').length > 0)) {
-              $(selector).append(addTime);
               $(".content").append("<a href='"+"http://192.168.1.20:8080/plan_zajec/plan.html"+"'>before</a>");
             }
           // }
@@ -207,6 +223,7 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           
           typPrzedmiot = "typPrzedmiot";
           uwagiDoPrzedmiotu = "uwagiDoPrzedmiotu";
+          var brakSali = "sala"
           $(this).find("nauczyciel").each(function () {
             nauczyciel = $(this).html();
             
@@ -229,11 +246,20 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
             typPrzedmiot = "typPrzeniesienie";
           }
 
-          $(selector).append("<tr><td class='topTable'><span class='termin'>"+termin+" "+dzien+ "</span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></td></tr>" + "<tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='sala'>"+sala+"</span></td></tr>"); //
+          if(sala === undefined){
+            brakSali = "brakSali";
+          }
+          
+          if(!($('.valid').length > 0)) {
+          $(selector).append("<div class='valid'><ul class='nav nav-tabs' role='tablist'><li class='active'><a href='#1zakladka' role='tab' data-toggle='tab'>Semestralny</a></li><li><a href='#2zakladka' role='tab' data-toggle='tab'>Tygodniowy</a></li></ul><div class='tab-content'><div class='tab-pane active result' id='1zakladka'></div><div class='tab-pane wynik2' id='2zakladka'></div></div></div>");    
+        }
+          $(" .result").append("<table class='table table-striped'><thead><tr><th class='topTable'><span class='termin'>"+termin+" "+dzien+ "</span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></th></tr></thead>" + "<tbody><tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='"+brakSali+"'>"+sala+"</span></td></tr></tbody></table>"); //
+          
+         // $(".wynik2").append("<tr><td class='topTable'><span class='termin'>"+termin+" "+dzien+ "</span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></td></tr>" + "<tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='sala'>"+sala+"</span></td></tr>"); //
         });
       }
     }
 </script>
- 
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>

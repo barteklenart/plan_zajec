@@ -71,16 +71,16 @@ body a:hover {
 }
 
 td { 
-  width: 800px;
+  width: 1800px;
   
 }
 tr {
   min-width: 100%;
 }
 
-th { background-color: darkseagreen; border-color: darkseagreen; border-style: solid; border-width: 1pt; }
+th { background-color: #8FBC8F; border-color: #8FBC8F; border-style: solid; border-width: 1pt; }
 tr.czerwony {color: red } /* zajęcia przeniesione */
-td { background-color: azure; text-align: center; border-color: darkseagreen; border-style: solid; border-width: 1pt; }
+td { background-color: #F0FFFF; text-align: center; border-color: #8FBC8F; border-style: solid; border-width: 1pt; }
 td.uwagi {color: green; font-style: italic; }
 td.termin {width: 6.5em}
 td.dzien {width: 9.5em}
@@ -106,19 +106,34 @@ td.dzien {width: 9.5em}
 tabela zajecia
 ====================
 */
+.table {
+  /*border: 1px solid #000;*/
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+  border-top: none; 
+}
+
+.table>thead>tr>th {
+  border-bottom: none; 
+}
 
 .topTable {
-  background: darkseagreen;
-  border-top: 1px solid #000;
+  background: #8FBC8F;
+  /*border-top: 1px solid #000;*/
   border-bottom: none;
   font-weight: 400;
 }
 
 .footerTable {
-  /*background: #fff;*/
-  border-bottom: none;
+
   border-top: none;
+  border-bottom: 1px solid #8FBC8F;
 }
+td {
+  border-bottom: none;
+}
+
+
 
 .midleTable {
   border-top: none;
@@ -147,6 +162,10 @@ tabela zajecia
   float: right;
 }
 
+.brakSali {
+  display: none;
+} 
+
 .loader {
   position: fixed;
   left: 0px;
@@ -156,3 +175,5 @@ tabela zajecia
   z-index: 9999;
   background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
 }
+
+
