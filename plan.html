@@ -19,12 +19,8 @@
     <div class="planzajec col-lg-6 col-xs-6"><a href="odmarcina.html">Plan Zajęć</a></div>
   </div>
 </div>
-<!-- <form action="index.php" method="get">
-<input type="hidden" name="typ" value="G"><input type="hidden" name="id" value="116061">okres: <select name="okres"><option selected value="1"></option>
-<option value="2">2015-02-16 do 2015-09-30</option></select><button type="submit">Ok</button>
-</form>
-<div class="grupa">KrDZIa3012</div> -->
- <p id="output"></p>
+
+<p id="output"></p>
 <p class="class"></p>
 <div class="loader"></div>
 <div class="container">
@@ -44,14 +40,8 @@
       <div class="sala">
 
       </div>
-     <!--    <ul class="nav nav-tabs" role="tablist">
-          <li class="active"><a href="#1zakladka" role="tab" data-toggle="tab">Cały semestr</a></li>
-          <li><a href="#2zakladka" role="tab" data-toggle="tab">Obecny tydzień</a></li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane active wynik1" id="1zakladka"></div>
-          <div class="tab-pane wynik2" id="2zakladka"></div>
-        </div> -->
+
+
   </div>
 </div>
 
@@ -62,7 +52,33 @@ $(window).load(function() {
   $(".loader").fadeOut("slow");
 })
 
-var before;
+
+//przechwytywanie nacisniecia przycisku wstecz w przegladarce
+
+jQuery(document).ready(function($) {
+
+  if (window.history && window.history.pushState) {
+
+    $(window).on('popstate', function() {
+      var hashLocation = location.hash;
+      var hashSplit = hashLocation.split("#!/");
+      var hashName = hashSplit[1];
+
+      if (hashName !== '') {
+        var hash = window.location.hash;
+        if (hash === '') {
+           window.location='http://localhost:8080/plan_zajec/plan.html';
+        }
+      }
+    });
+
+    window.history.pushState('forward', null, './plan.html');
+  }
+
+});
+
+// koniec kodu do przechwytywania 
+
 var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
     var yql = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + site + '"') + '&format=xml&callback=?';
     var widthSize = $(document).width();
@@ -102,11 +118,11 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
                   $(".sala").append("<tr><td><a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp &nbsp</a></td></tr>").hide();
                 } else {
                   $(".sala").append("<a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&grupa=" + grupa + "' >" + grupa + "&nbsp &nbsp</a>");
-                  // $(".sala").append(wS);
+
                 }
                 break;                
             default: 
-                console.log("Nothing to display");
+                console.log("Brak danych");
           }       
         });
       }
@@ -132,84 +148,138 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
         mainThis.bindLinks('.grupy');
         mainThis.bindLinks('.nauczyciele');
         mainThis.bindLinks('.sala');
+        mainThis.bindLinks('.teraz');
 
       },
       bindLinks: function(selector){
         var mainThis = this;
+        var okesPierwszy = this;
+        var flaga = 2;
         $(selector + " a").on('click', function (e) {
           e.preventDefault();
-          mainThis.parseXml($(this).attr('href'), function (data) {
 
+
+
+         okesPierwszy.parseXml($(this).attr('href'),1 , function (data) {
             switch(selector) {
               case ".grupy":
-                    mainThis.renderJsonData(data, '.grupy')
+                    mainThis.renderJsonData(data, '.grupy', 1)
                     mainThis.bindLinks('.grupy')
                     break;
               case ".nauczyciele":
-                    mainThis.renderJsonData(data, '.nauczyciele')
+                    mainThis.renderJsonData(data, '.nauczyciele',1)
                     mainThis.bindLinks('.nauczyciele')
                     break;
               case ".sala":
-                    mainThis.renderJsonData(data, '.sala')
+                    mainThis.renderJsonData(data, '.sala', 1)
                     mainThis.bindLinks('.sala')
                     break;
               default:
                     console.log("Nothing to display");
 
             }
-            // mainThis.renderJsonData(data, '.grupy');
-            // mainThis.bindLinks('.grupy');
-            // mainThis.bindLinks('.sala');
+
+          })
+
+
+
+          mainThis.parseXml($(this).attr('href'), 2, function (data) {
+            switch(selector) {
+              case ".grupy":
+                    mainThis.renderJsonData(data, '.grupy', 2)
+                    mainThis.bindLinks('.grupy')
+                    break;
+              case ".nauczyciele":
+                    mainThis.renderJsonData(data, '.nauczyciele', 2)
+                    mainThis.bindLinks('.nauczyciele')
+                    break;
+              case ".sala":
+                    mainThis.renderJsonData(data, '.sala', 2)
+                    mainThis.bindLinks('.sala')
+                    break;
+              default:
+                    mainThis.renderJsonData(data, '.teraz', 2)
+                    mainThis.bindLinks('.teraz')
+                    break;
+
+            }
+
           })
         })
       },
-      parseXml: function(url, callback){
 
-        // urlOkres1 = url;
-        // urlOkres1 = urlOkres1 + "&okres=1"
-        // urlOkres1 = urlOkres1+"&xml";
-        // urlOkres1 = urlOkres1.replace(/\ /g, '%20');
-        // var yql1 = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + urlOkres1 + '"') + '&format=xml&callback=?';
-        // $.getJSON(yql1, function(data){
-        //   // console.log(data);
-        //   callback(data);
-        // })   
 
-        url = url + "&okres=2";
-        url = url+"&xml";
-        url = url.replace(/\ /g, '%20');
-        console.log(url);
-        var yql = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + url + '"') + '&format=xml&callback=?';
-        $.getJSON(yql, function(data){
-          // console.log(data);
-          callback(data);
-        })
+ 
+
+
+      parseXml: function(url,flaga, callback){
+
+        if(flaga === 1){
+          urlOkres1 = url;
+          urlOkres1 = urlOkres1 + "&okres=1"
+          urlOkres1 = urlOkres1+"&xml";
+          urlOkres1 = urlOkres1.replace(/\ /g, '%20');
+          before = urlOkres1;
+
+          console.log(urlOkres1 + " URL okres=1"); 
+          var yql1 = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + urlOkres1 + '"') + '&format=xml&callback=?';
+          $.getJSON(yql1, function(data){
+            callback(data);
+            console.log("Dane z pierwszej flagi");
+          })   
+          
+        }  else if(flaga === 2)  {
+          url = url + "&okres=2";
+          url = url+"&xml";
+          url = url.replace(/\ /g, '%20');
+          before = url;
+          console.log(before + " podstrona 2");
+          console.log(url + "URL okres=2");
+          var yql = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + url + '"') + '&format=xml&callback=?';
+          $.getJSON(yql, function(data){
+            // console.log(data);
+            callback(data);
+            console.log("Dane  drugiej flagi");
+          })
+          
+        }
       },
-      renderJsonData: function (data, selector) {
+
+      renderJsonData: function (data, selector, flaga) {
         $(selector).html(' ');
         var i = 0;
+        console.log("RenderJsonData " + flaga);
+
         $(data.results[0]).find("zasob").each(function() {
           i++;
           // console.log(i);
           var typ = $(this).attr("typ");
           var nazwa = $(this).attr("nazwa");
           var id = $(this).attr("id");
+          
 
 
           $(selector).append("<tr><td><a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&id=" + id + "' >" + nazwa + "&nbsp</a></td></tr>");
+           $(".teraz").append("<a href='"+before+"'>wstecz</a>")
 
         });
 
+        // nazwaOkresu = $(data.results[0].find("plan-zajec").attr("nazwa");          
+        // console.log(nazwaOkresu);
+
+        
+
+        // console.log(nazwaOkresu);
         $(data.results[0]).find("okres").each(function() {
           var od = $(this).attr("od");
           var doo = $(this).attr("do");
           var typOkres = $(this).attr("typ");
-          var nazwaOkresu = $(this).attr("nazwa");
-
-
           
 
+          // console.log(nazwaOkresu);
           
+
+        
 
             if(!($('.nav-tabs').length > 0)) {
               $(".content").append("<a href='"+"http://192.168.1.20:8080/plan_zajec/plan.html"+"'>before</a>");
@@ -218,16 +288,17 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
 
         });  
 
+        if (flaga === 2) {
+
+
         $(data.results[0]).find("zajecia").each(function() {
-          var nauczyciel, sala, termin, dzien, od_godz, do_godz, przedmiot, typ,grupa, typPrzedmiot, uwagi, uwagiDoPrzedmiotu ;
+          var nauczyciel, sala, termin, dzien, od_godz, do_godz, przedmiot, typ,grupa, typPrzedmiot, uwagi, uwagiDoPrzedmiotu, brakSali;
           
           typPrzedmiot = "typPrzedmiot";
           uwagiDoPrzedmiotu = "uwagiDoPrzedmiotu";
-          var brakSali = "sala"
-          $(this).find("nauczyciel").each(function () {
-            nauczyciel = $(this).html();
-            
-          });
+          brakSali = "sala"
+          
+          nauczyciel = $(this).find("nauczyciel").html();
           grupa = $(this).find("grupa").html();
           termin = $(this).find("termin").html();
           dzien = $(this).find("dzien").html();
@@ -237,6 +308,9 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           typ = $(this).find("typ").html();
           sala = $(this).find("sala").html();
           uwagi = $(this).find("uwagi").html();
+          // name = $("okres").find("nazwa").html();
+
+          // console.log(nazwaOkresu);
           
           if (uwagi === undefined){
               uwagiDoPrzedmiotu = "brakUwag";
@@ -252,13 +326,68 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           
           if(!($('.valid').length > 0)) {
           $(selector).append("<div class='valid'><ul class='nav nav-tabs' role='tablist'><li class='active'><a href='#1zakladka' role='tab' data-toggle='tab'>Semestralny</a></li><li><a href='#2zakladka' role='tab' data-toggle='tab'>Tygodniowy</a></li></ul><div class='tab-content'><div class='tab-pane active result' id='1zakladka'></div><div class='tab-pane wynik2' id='2zakladka'></div></div></div>");    
-        }
+        }      
+        console.log(flaga);  
+        // console.log(nazwaOkresu);
           $(" .result").append("<table class='table table-striped'><thead><tr><th class='topTable'><span class='termin'>"+termin+" "+dzien+ "</span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></th></tr></thead>" + "<tbody><tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='"+brakSali+"'>"+sala+"</span></td></tr></tbody></table>"); //
           
+         
+         
+
          // $(".wynik2").append("<tr><td class='topTable'><span class='termin'>"+termin+" "+dzien+ "</span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></td></tr>" + "<tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='sala'>"+sala+"</span></td></tr>"); //
+        
         });
+        } else {
+          $(data.results[0]).find("zajecia").each(function() {
+          var nauczyciel, sala, termin, dzien, od_godz, do_godz, przedmiot, typ,grupa, typPrzedmiot, uwagi, uwagiDoPrzedmiotu, brakSali, nazwa;
+          
+          typPrzedmiot = "typPrzedmiot";
+          uwagiDoPrzedmiotu = "uwagiDoPrzedmiotu";
+          brakSali = "sala"
+          
+          nauczyciel = $(this).find("nauczyciel").html();
+          grupa = $(this).find("grupa").html();
+          termin = $(this).find("termin").html();
+          dzien = $(this).find("dzien").html();
+          od_godz = $(this).find("od-godz").html();
+          do_godz = $(this).find("do-godz").html();
+          przedmiot = $(this).find("przedmiot").html();
+          typ = $(this).find("typ").html();
+          sala = $(this).find("sala").html();
+          uwagi = $(this).find("uwagi").html();
+          nazwa = $(this).find("nazwa").html();
+          
+          // console.log(uwagi);
+
+          if (uwagi === undefined){
+              uwagiDoPrzedmiotu = "brakUwag";
+          }
+
+          if(typ === "Przeniesienie zajęć"){
+            typPrzedmiot = "typPrzeniesienie";
+          }
+
+          if(sala === undefined){
+            brakSali = "brakSali";
+          }
+          
+          if(!($('.valid').length > 0)) {
+          $(selector).append("<div class='valid'><ul class='nav nav-tabs' role='tablist'><li class='active'><a href='#1zakladka' role='tab' data-toggle='tab'>Semestralny</a></li><li><a href='#2zakladka' role='tab' data-toggle='tab'>Tygodniowy</a></li></ul><div class='tab-content'><div class='tab-pane active result' id='1zakladka'></div><div class='tab-pane wynik2' id='2zakladka'></div></div></div>");    
+        }      
+        console.log(flaga);  
+         
+
+          // $(" .result").append("<table class='table table-striped'><thead><tr><th class='topTable'><span class='termin'>"+termin+" "+dzien+ "</span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></th></tr></thead>" + "<tbody><tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='"+brakSali+"'>"+sala+"</span></td></tr></tbody></table>"); //
+          
+          // $(".teraz").append("<div class='nazwa'>"+nazwa+"</div>");
+         
+
+         $(".wynik2").append("<tr><td class='topTable'><span class='termin'>"+termin+" "+dzien+ "</span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></td></tr>" + "<tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='sala'>"+sala+"</span></td></tr>"); //
+        
+       });
       }
     }
+  }
 </script>
 <script src="js/bootstrap.min.js"></script>
 </body>
