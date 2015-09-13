@@ -1,9 +1,32 @@
+/*@import url(https://fonts.googleapis.com/css?family=Radley);*/
+.planzajec a{
+  /*float: left;*/
+  font-size: 36px;
+  font-family: Arial;
+  color: #6dbd63;
+      height: 90px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 5px;
+    /*line-height: 90px; */
+  /*color: #000;*/
+  /*font-weight: 400;*/
+          /*font-family:Georgia,serif;*/
+  /*color:#4E443C;*/
+  /*font-variant: small-caps; text-transform: none; font-weight: 100; margin-bottom: 0;*/
+  /*text-shadow: 2px 2px 3px rgba(0,0,0,0.3);*/
+}
+
 body a{
   color: #000;
   font-weight: 300;
 
 }
 
+body {
+  /*background: #333;*/
+}
 body a:hover {
   color: #000;
 }
@@ -42,6 +65,10 @@ body a:hover {
 .btn-alt {
   width: 100%;
 }
+
+@media (max-width: 800px){
+}
+
 .btn {
   margin: 0 auto;
   padding-top: 10px;
@@ -49,12 +76,13 @@ body a:hover {
   margin-bottom: 10px;
   margin-top: 10px;
   width: 100%;
-  border: 1px solid #000;
+  /*border: 1px solid #000;*/
   text-transform: uppercase;
   /*background: darkseagreen;*/
   color: #fff;
   font-weight: 400;
 }
+
 
 .row {
   margin: 0 auto;
@@ -91,14 +119,14 @@ td.dzien {width: 9.5em}
 }
 
 .logo img{
-  float: right;
+  /*float: right;*/
+  max-width: 150px;
 }
 
-.planzajec a{
-  float: left;
-  font-size: 36px;
-  color: #000;
-  font-weight: 400;
+
+.planzajec a:hover {
+  text-decoration: none;
+  color: #419641 ;
 }
 
 /*
@@ -173,7 +201,12 @@ td {
   width: 100%;
   height: 100%;
   z-index: 9999;
-  background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+  background: url('images/ajax-loader-green-large.gif') 50% 50% no-repeat rgb(249,249,249);
 }
 
-
+.grupaSzczegol, .nazwaGrupy{
+  font-size: 26px;
+  font-family: Arial;
+  color: #6dbd63;
+  
+}
