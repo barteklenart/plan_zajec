@@ -1,4 +1,4 @@
-/*@import url(https://fonts.googleapis.com/css?family=Radley);*/
+@import url(https://fonts.googleapis.com/css?family=Radley);*/
 .planzajec a{
   /*float: left;*/
   font-size: 36px;
@@ -66,8 +66,7 @@ body a:hover {
   width: 100%;
 }
 
-@media (max-width: 800px){
-}
+
 
 .btn {
   margin: 0 auto;
@@ -90,14 +89,20 @@ body a:hover {
   .grupy a, .nauczyciele a, .sala a{
       font-size: 18px;
   }
+.grupy, .nauczyciele, .sala{
+  text-align: center;
+}
+  .grupy a:hover, .nauczyciele a:hover, .sala a:hover{
+      text-decoration: underline;
+      text-align: center;
+  }
+@media (max-width: 800px){
+
   .grupy a:hover, .nauczyciele a:hover, .sala a:hover{
       text-decoration: none;
       text-align: center;
   }
-.grupy, .nauczyciele, .sala{
-  text-align: center;
 }
-
 td { 
   width: 1800px;
   
@@ -204,9 +209,16 @@ td {
   background: url('images/ajax-loader-green-large.gif') 50% 50% no-repeat rgb(249,249,249);
 }
 
-.grupaSzczegol, .nazwaGrupy{
+.grupaSzczegol, .nazwaGrupySali{
   font-size: 26px;
   font-family: Arial;
   color: #6dbd63;
   
+}
+
+
+/*@media(min-width: 800px){
+  .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 0px;
+  }
 }
