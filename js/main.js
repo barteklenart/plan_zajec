@@ -96,7 +96,8 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
                 break;                
             default: 
                 $(".cont").append("<p>Brak danych do wyświetlenia</p>");
-          }       
+          }   
+              
         });
       }
 
@@ -129,13 +130,15 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
         mainThis.bindLinks('.nauczyciele');
         mainThis.bindLinks('.sala');
         mainThis.bindLinks('.cont');
+
+
       },// metoda init
       
       bindLinks: function(selector){
         var okesPierwszy = this;
         var mainThis = this;  
         
-
+        $(document).find('td').last().css("border-bottom", "1px solid #ddd");
 
         if (!($(".wizytowka").length)){
    
@@ -213,6 +216,9 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
         grupaSala = $(data.results[0]).attr("grupa");
         nazwaGrupySali = $(data.results[0]).attr("nazwa");
   
+    //       $(document).ready(function() {
+    //     $('.loader').introLoader();
+    // });
         $(data.results[0]).find("zasob").each(function() {
 
           var typ = $(this).attr("typ");
@@ -220,11 +226,11 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           var id = $(this).attr("id");
 
           if(!($('.grupaSzczegol').length > 0)){
-            $(selector).append("<div class='grupaSzczegol'>"+grupaSala+"</div>");
+            $(selector).append("<div class='grupaSzczegol'><h3>"+grupaSala+"</h3></div>");
           }
 
 
-        $(selector).append("<tr><td class='nrTd'><a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&id=" + id + "' >" + nazwa + "&nbsp</a></td></tr>");
+        $(selector).append("<tr><td><a href='http://planzajec.uek.krakow.pl/index.php?typ=" + typ + "&id=" + id + "' >" + nazwa + "&nbsp</a></td></tr>");
         });
 
         if(($(data.results[0]).attr("grupa"))  === undefined){
@@ -236,8 +242,9 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           
           typPrzedmiot = "typPrzedmiot";
           uwagiDoPrzedmiotu = "uwagiDoPrzedmiotu";
-          brakSali = "sala" 
-          wizytowka = "wizytowka";         
+          brakSali = "sala"; 
+          wizytowka = "wizytowka"; 
+          brakNauczyciel = "nauczyciel";        
           nauczyciel = $(this).find("nauczyciel").html();
           nauczycielWizytowka = $(this).find("nauczyciel").attr("moodle");
           grupa = $(this).find("grupa").html();
@@ -251,31 +258,95 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           uwagi = $(this).find("uwagi").html();
           nazwa = $(this).find("nazwa").html();
           
+// funkcje sprawdzajace
 
-          if(nauczycielWizytowka === undefined){
-            wizytowka = "brakWizytowki";
+          function sprSala(dane){
+            sala = $(dane).find("sala").html();
+              if(sala === undefined){
+                  return brakSali = "brakSali";                  
           } else {
-          nauczycielWizytowka = nauczycielWizytowka.replace(/-/g, '');
+            return brakSali = "sala";          
+          }
+          };
+
+          function sprUwagi(dane){
+            uwagi = $(dane).find("uwagi").html();
+              if (uwagi === undefined){
+                 return uwagiDoPrzedmiotu = "brakUwag";              
+              } else {
+                return uwagiDoPrzedmiotu = "uwagiDoPrzedmiotu";
+              }
           }
 
-          if (uwagi === undefined){
-              uwagiDoPrzedmiotu = "brakUwag";
+          function sprTyp(dane){
+            typ = $(dane).find("typ").html();
+              if(typ === "Przeniesienie zajęć"){
+                return typPrzedmiot = "typPrzeniesienie";            
+              } else {
+                return   typPrzedmiot = "typPrzedmiot";
+              }
           }
 
-          if(typ === "Przeniesienie zajęć"){
-            typPrzedmiot = "typPrzeniesienie";
+          function sprNauczyciel(dane){
+            nauczyciel = $(dane).find("nauczyciel").html();
+             if(nauczyciel === undefined){
+              brakNauczyciel = "brakNauczyciel";
+              nauczyciel = "";
+              return brakNauczyciel, nauczyciel;
+            } else {
+              return brakNauczyciel = "nauczyciel"; 
+            }
           }
 
-          if(sala === undefined){
-            brakSali = "brakSali";
+          function sprWizytowka(dane){
+            nauczycielWizytowka = $(dane).find("nauczyciel").attr("moodle");
+             if(nauczycielWizytowka === undefined){
+                return wizytowka = "brakWizytowki";
+             } else {
+               return nauczycielWizytowka = nauczycielWizytowka.replace(/-/g, '');
+             }
           }
+
+          function funkcjaSprawdzajaca(dane){
+            sprSala(dane);
+            sprUwagi(dane);
+            sprTyp(dane);
+            sprNauczyciel(dane);
+            sprWizytowka(dane);
+          };
+
+          funkcjaSprawdzajaca($(this));
+
+          // if(nauczycielWizytowka === undefined){
+          //   wizytowka = "brakWizytowki";
+          // } else {
+          // nauczycielWizytowka = nauczycielWizytowka.replace(/-/g, '');
+          // }
+
+          // if (uwagi === undefined){
+          //     uwagiDoPrzedmiotu = "brakUwag";
+          // }
+
+          // if(typ === "Przeniesienie zajęć"){
+          //   typPrzedmiot = "typPrzeniesienie";
+          // }
+
+          // if(sala === undefined){
+          //   brakSali = "brakSali";
+          // }
+
+          // if(nauczyciel === undefined){
+          //   brakNauczyciel = "brakNauczyciel";
+          //   nauczyciel = "";
+          // }
+
 
           $(".brakPrzypisanegoPlanu").remove();      
 
-          console.log("Flaga: " + flaga, " Selektor: " + selector + " data: " + data);
+          // console.log("Flaga: " + flaga, " Selektor: " + selector + " data: " + data);
 
           if(!($('.valid').length > 0)) {
-          $(selector).append("<div class='grupaSzczegol'>"+nazwaGrupySali+"</div>");
+          $(selector).append("<div class='grupaSzczegol'><h3>"+nazwaGrupySali+"</h3></div>");
 
           $(selector).append("<div class='valid'><ul class='nav nav-tabs' role='tablist'><li class='active'><a href='#1zakladka' role='tab' data-toggle='tab'>14-dniowy</a></li><li><a href='#2zakladka' role='tab' data-toggle='tab'>Semestralny</a></li></ul><div class='tab-content'><div class='tab-pane active wynik2' id='1zakladka'></div><div class='tab-pane result' id='2zakladka'></div></div></div>");   
         }               
@@ -283,13 +354,14 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
         switch(flaga){
           case 1:
                 if (width < 981){
-                  $(".wynik2").append("<table class='table'><tr><th class='topTable'><span class='termin'>"+termin+" "+dzien+ " </span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></th></tr>" + "<tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td class='midleTable'><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='"+brakSali+"'>"+sala+"</span></td></tr></table>")                  
+                  $(".wynik2").append("<table class='table'><tr><th class='topTable'><span class='termin'>"+termin+" "+dzien+ " </span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></th></tr>" + "<tr><td class='midleTable a'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td class='midleTable a'><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='"+brakSali+"'>"+sala+"</span></td></tr></table>")   
+
                 } else {
                   if(!($('.t1').length > 0)){
                     $(".wynik2").append("<table class='table table-hover'><thead><tr><th>Termin</th><th>Dzień, godzina</th><th>Przedmiot</th><th>Typ</th><th>Nauczyciel</th><th>Grupa</th></tr></thead><tbody class='t1'></tbody></table>")                    
                   }
 
-                  $(".t1").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td><td>"+typ+" "+przedmiot+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+sala+"</span></td>")
+                  $(".t1").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+sala+"</span></td>")
                 }
                 break;
           case 2:
@@ -299,7 +371,7 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
                 if(!($('.t2').length > 0)){
                     $(".result").append("<table class='table table-hover'><thead><tr><th>Termin</th><th>Dzień, godzina</th><th>Przedmiot</th><th>Typ</th><th>Nauczyciel</th><th>Grupa</th></tr></thead><tbody class='t2'></tbody></table>")                    
                   }
-                $(".t2").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td><td>"+typ+" "+przedmiot+"</td>"+"<td>"+ nauczyciel+ "<a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+sala+"</span></td>")                
+                $(".t2").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+sala+"</span></td>")                
               }
                 break;
           default:
@@ -308,3 +380,4 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
        });
       } // metoda renderJsonData
     } // klasa renderDocument
+
