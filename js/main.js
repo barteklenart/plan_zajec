@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
       if (hashName !== '') {
         var hash = window.location.hash;
         if (hash === '') {
-           window.location='http://planuek.prv.pl/index.html';
+           window.location='http://uekplan.byethost32.com/index.html';
         }
       }
     });
@@ -37,27 +37,8 @@ $(document).ready(function(){
   });
   
 });
-// koniec kodu do przechwytywania 
 
-//   function showViewPortSize(display) {
-//     if(display) {
-//       var height = jQuery(window).height();
-//        width = jQuery(window).width();
-//       jQuery('body').prepend('<div id="viewportsize" style="z-index:9999;position:fixed;top:40px;left:5px;color:#fff;background:#000;padding:10px">Height: '+height+'<br>Width: '+width+'</div>');
-//       jQuery(window).resize(function() {
-//         height = jQuery(window).height();
-//         width = jQuery(window).width();
-       
-//         jQuery('#viewportsize').html('Height: '+height+'<br>Width: '+width);
-//       });
-//     }
-//   }
-
-// showViewPortSize(true);
-
-
-
-var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
+  var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
     var yql = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + site + '"') + '&format=xml&callback=?';
 
     width = jQuery(window).width();
@@ -204,6 +185,8 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
 
           var yql1 = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from xml where url="' + urlOkres1 + '"') + '&format=xml&callback=?';
 
+
+
           $.getJSON(yql1, function(data){
             callback(data);
           })       
@@ -215,15 +198,31 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
 
         grupaSala = $(data.results[0]).attr("grupa");
         nazwaGrupySali = $(data.results[0]).attr("nazwa");
-  
-    //       $(document).ready(function() {
-    //     $('.loader').introLoader();
-    // });
+        idWizytowka = $(data.results[0]).attr("idcel");
+        typDanych = $(data.results[0]).attr("typ");
+
+        // if(idWizytowka != undefined){
+        //   idWizytowka = idWizytowka.replace(/-/g, '');
+        // }
+        
+        function replaceMinusWizytowka(replace){
+          if(replace != undefined){
+          idWizytowka = replace.replace(/-/g, '');
+          return idWizytowka;
+        }
+        } 
+
+
+        replaceMinusWizytowka($(data.results[0]).attr("idcel"));
+
+
+
         $(data.results[0]).find("zasob").each(function() {
 
           var typ = $(this).attr("typ");
           var nazwa = $(this).attr("nazwa");
           var id = $(this).attr("id");
+
 
           if(!($('.grupaSzczegol').length > 0)){
             $(selector).append("<div class='grupaSzczegol'><h3>"+grupaSala+"</h3></div>");
@@ -236,6 +235,11 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
         if(($(data.results[0]).attr("grupa"))  === undefined){
             $(selector).append("<p class='brakPrzypisanegoPlanu'>Obecnie brak przypisanego planu zajęc!</p>");        
           }
+
+ // console.log($(data.results[0]).find("okres").attr("do"));
+          // semestralnyOd = $(data.results[0]).find("okres")[1].outerHTML;
+
+          // console.log(  semestralnyOd);
 
           $(data.results[0]).find("zajecia").each(function() {
           var nauczyciel,nauczycielWizytowka, sala, termin, dzien, od_godz, do_godz, przedmiot, typ,grupa, typPrzedmiot, uwagi, uwagiDoPrzedmiotu, brakSali, nazwa;
@@ -257,7 +261,11 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
           sala = $(this).find("sala").html();
           uwagi = $(this).find("uwagi").html();
           nazwa = $(this).find("nazwa").html();
-          
+
+          doDataTygodniowego = "";
+          semestralny ="";
+              
+
 // funkcje sprawdzajace
 
           function sprSala(dane){
@@ -307,6 +315,7 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
              }
           }
 
+
           function funkcjaSprawdzajaca(dane){
             sprSala(dane);
             sprUwagi(dane);
@@ -317,38 +326,34 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
 
           funkcjaSprawdzajaca($(this));
 
-          // if(nauczycielWizytowka === undefined){
-          //   wizytowka = "brakWizytowki";
-          // } else {
-          // nauczycielWizytowka = nauczycielWizytowka.replace(/-/g, '');
-          // }
-
-          // if (uwagi === undefined){
-          //     uwagiDoPrzedmiotu = "brakUwag";
-          // }
-
-          // if(typ === "Przeniesienie zajęć"){
-          //   typPrzedmiot = "typPrzeniesienie";
-          // }
-
-          // if(sala === undefined){
-          //   brakSali = "brakSali";
-          // }
-
-          // if(nauczyciel === undefined){
-          //   brakNauczyciel = "brakNauczyciel";
-          //   nauczyciel = "";
-          // }
-
-
           $(".brakPrzypisanegoPlanu").remove();      
+          idWizytowkaKklasa = "wizytowka";
+          if(idWizytowka === undefined){
+                 idWizytowkaKklasa = "brakWizytowki";
+             } 
+             
+            
+            function datyOkresu(dane){ 
+            $(dane).find("okres").each(function(){
+                if ($(this).attr("wybrany")){
+                  doDataTygodniowego = $(this).attr("do");
+                }
+                semestralnyDo = $(this).attr("do");
+                semestralnyOd = $(this).attr("od");
+            });
+          };
+
+          datyOkresu(data.results[0]);
+             
+           
 
           // console.log("Flaga: " + flaga, " Selektor: " + selector + " data: " + data);
 
           if(!($('.valid').length > 0)) {
-          $(selector).append("<div class='grupaSzczegol'><h3>"+nazwaGrupySali+"</h3></div>");
+          $(selector).append("<div class='grupaSzczegol'><h3>"+nazwaGrupySali +"<a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+idWizytowka + "#section-0' class='"+idWizytowkaKklasa+"'> &nbsp;&nbsp;</a> " +"</h3></div>");
+          
 
-          $(selector).append("<div class='valid'><ul class='nav nav-tabs' role='tablist'><li class='active'><a href='#1zakladka' role='tab' data-toggle='tab'>14-dniowy</a></li><li><a href='#2zakladka' role='tab' data-toggle='tab'>Semestralny</a></li></ul><div class='tab-content'><div class='tab-pane active wynik2' id='1zakladka'></div><div class='tab-pane result' id='2zakladka'></div></div></div>");   
+          $(selector).append("<div class='valid'><ul class='nav nav-tabs' role='tablist'><li class='active'><a href='#1zakladka' role='tab' data-toggle='tab'>do "+ doDataTygodniowego +"</a></li><li><a href='#2zakladka' role='tab' data-toggle='tab'>do "+semestralnyDo+"</a></li><li><a href='#zz' role='tab' data-toggle='tab'>Dodatkowy</a></li></ul><div class='tab-content'><div class='tab-pane active wynik2' id='1zakladka'></div><div class='tab-pane result' id='2zakladka'></div></div></div>");   
         }               
 
         switch(flaga){
@@ -358,10 +363,30 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
 
                 } else {
                   if(!($('.t1').length > 0)){
-                    $(".wynik2").append("<table class='table table-hover'><thead><tr><th>Termin</th><th>Dzień, godzina</th><th>Przedmiot</th><th>Typ</th><th>Nauczyciel</th><th>Grupa</th></tr></thead><tbody class='t1'></tbody></table>")                    
+                    switch(typDanych){
+                      case "N": 
+                          $(".wynik2").append("<table class='table table-hover'><thead><tr><th class='col-lg-1'>Termin</th><th class='col-lg-1'>Dzień, godzina</th><th class='col-lg-2'>Przedmiot</th><th class='col-lg-1'>Typ</th><th class='col-lg-2'>Sala</th><th>Grupa</th></tr></thead><tbody class='t1'></tbody></table>")     
+                          break;
+                      case "G":
+                          $(".wynik2").append("<table class='table table-hover'><thead><tr><th class='col-lg-1'>Termin</th><th class='col-lg-1'>Dzień, godzina</th><th class='col-lg-2'>Przedmiot</th><th class='col-lg-1'>Typ</th><th>Nauczyciel</th><th class='col-lg-2'>Sala</th></tr></thead><tbody class='t1'></tbody></table>")
+                          break;
+                      case "S":
+                          $(".wynik2").append("<table class='table table-hover'><thead><tr><th class='col-lg-1'>Termin</th><th class='col-lg-1'>Dzień, godzina</th><th>Przedmiot</th><th class='col-lg-1'>Typ</th><th>Nauczyciel</th><th>Grupa</th></tr></thead><tbody class='t1'></tbody></table>")
+                          break;
+
+                      default:
+                        
+                    }
+           
+                  }
+                  if (typDanych === "N"){
+                    $(".t1").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ sala+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+grupa+"</span></td>")
+                  } if (typDanych === "G"){
+                    $(".t1").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+sala+"</span></td>")
+                  } if (typDanych === "S"){
+                    $(".t1").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td>"+grupa+"</td>")
                   }
 
-                  $(".t1").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+sala+"</span></td>")
                 }
                 break;
           case 2:
@@ -369,10 +394,32 @@ var site = 'http://planzajec.uek.krakow.pl/index.php?&xml';
                 $(" .result").append("<table class='table'><tr><th class='topTable'><span class='termin'>"+termin+" "+dzien+ " </span><span class='odDoGodzina'>"+od_godz+ " - "+ do_godz +"</span></th></tr>" + "<tr><td class='midleTable'><span class='"+typPrzedmiot+"'>["+typ+"] "+przedmiot+"</span></td></tr>"+"<tr><td class='midleTable'><span class='prowadzacy'>"+ nauczyciel+ "</span><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td></tr>" + "<tr><td class='footerTable'><span class='"+brakSali+"'>"+sala+"</span></td></tr></table>")                
               } else {
                 if(!($('.t2').length > 0)){
-                    $(".result").append("<table class='table table-hover'><thead><tr><th>Termin</th><th>Dzień, godzina</th><th>Przedmiot</th><th>Typ</th><th>Nauczyciel</th><th>Grupa</th></tr></thead><tbody class='t2'></tbody></table>")                    
+                    switch(typDanych){
+                      case "N": 
+                          $(".result").append("<table class='table table-hover'><thead><tr><th class='col-lg-1'>Termin</th><th class='col-lg-1'>Dzień, godzina</th><th class='col-lg-2'>Przedmiot</th><th class='col-lg-1'>Typ</th><th class='col-lg-2'>Sala</th><th>Grupa</th></tr></thead><tbody class='t2'></tbody></table>")     
+                          break;
+                      case "G":
+                          $(".result").append("<table class='table table-hover'><thead><tr><th class='col-lg-1'>Termin</th><th class='col-lg-1'>Dzień, godzina</th><th class='col-lg-2'>Przedmiot</th><th class='col-lg-1'>Typ</th><th>Nauczyciel</th><th class='col-lg-2'>Sala</th></tr></thead><tbody class='t2'></tbody></table>")
+                          break;
+                      case "S":
+                          $(".result").append("<table class='table table-hover'><thead><tr><th class='col-lg-1'>Termin</th><th class='col-lg-1'>Dzień, godzina</th><th>Przedmiot</th><th class='col-lg-1'>Typ</th><th>Nauczyciel</th><th>Grupa</th></tr></thead><tbody class='t2'></tbody></table>")
+
+                          break;
+
+                      default:
+                        
+                    }
+           
                   }
-                $(".t2").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+sala+"</span></td>")                
-              }
+                  if (typDanych === "N"){
+                    $(".t2").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ sala+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+grupa+"</span></td>")
+                  } if (typDanych === "G"){
+                    $(".t2").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td><span class='"+brakSali+"'>"+sala+"</span></td>")
+                  } if (typDanych === "S"){
+                    $(".t2").append("<tr><td>"+termin+"</td><td>  "+dzien+ " " +od_godz+ " - "+ do_godz +"</td>" + "<td>"+przedmiot+"</td><td>"+typ+"</td>"+"<td>"+ nauczyciel+ " <a href='https://e-uczelnia.uek.krakow.pl/course/view.php?id="+ nauczycielWizytowka +"#section-0' class='"+wizytowka+"'> &nbsp;&nbsp;</a><span class='"+uwagiDoPrzedmiotu+"'>"+uwagi+"</span></td>" + "<td>"+grupa+"</td>")
+                  }
+
+                }
                 break;
           default:
             $(".result").append("<p>Brak danych spróbuj jeszcze raz</p>");        
