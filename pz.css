@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Radley);
+
 a .planzajec {
   font-size: 36px;
   font-family: Arial;
@@ -103,10 +103,15 @@ tabela zajecia
 ====================
 */
 
+.usunAsci {
+  display: none;
+}
+
 @media (max-width: 981px){
 
 .table {
   border: 1px solid #ddd;
+  font-size: 14px;
 
 }
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
@@ -138,6 +143,9 @@ td {
 .termin, .typPrzedmiot, .sala, .prowadzacy {
   float: left;
 }
+.typPrzedmiot {
+  left:0;
+}
 .odDoGodzina {
   float: right;
 }
@@ -157,7 +165,6 @@ td {
   display: none;
 }
 .brakWizytowki:hover {
-  direction: none;
   text-decoration: none;
 }
 
@@ -226,6 +233,15 @@ h3 {
   a[href]:after {
     content: none !important;
   }
+  .uwagiDoPrzedmiotu {
+    display: none;
+  }
+  td,th {
+    padding: 0px;
+  }
+  .wizytowka {
+    display: none;
+  }
 }
 
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
@@ -250,3 +266,32 @@ table {
     word-wrap: break-word;
 }
 
+@media (min-width: 1200px){
+
+.k1{
+  width: 5.8%;
+}
+.k4 {
+  width: 9%;
+}
+
+}
+@media (min-width: 550px) and (max-width: 565px){
+.wizytowka{
+  display: none;
+}
+}
+@media (max-width: 981px) {
+  .k1{
+  width: 9.5%;
+}
+.k4 {
+  width: 8%;
+}
+.k2 {
+  width: 15%;
+}
+/*.wizytowka{
+  display: none;
+}*/fa
+}
